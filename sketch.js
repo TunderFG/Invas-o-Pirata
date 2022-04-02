@@ -9,12 +9,21 @@ var ball;
 var balls = [];
 var navio;
 var navios = [];
+var naviospritedata,naviospritesheet,navioanimation = [];
+var navioquebradosprdata,navioquebradosprsheet,navioquebradoanm = [];
+var splashdata,splashsheet,splashanimation = [];
 
 
 
 function preload() {
   backgroundIMG = loadImage("assets/background.gif");
   towerIMG = loadImage("assets/tower.png");
+  naviospritedata = loadJSON("assets/boat/boat.json");
+  naviospritesheet = loadImage("assets/boat/boat.png");
+  navioquebradosprdata = loadJSON("assets/boat/brokenBoat.json");
+  navioquebradosprsheet = loadImage("assets/boat/brokenBoat.png");
+  splashdata = loadJSON("assets/waterSplash/waterSplash.json");
+  splashsheet = loadImage("assets/waterSplash/waterSplash.png");
 }
 
 function setup() {
@@ -37,6 +46,31 @@ function setup() {
   a = 15
 
   cannon = new Cannon(180,110,130,100,a);
+
+  //Carregar Animações
+  var naviosframes = naviospritedata.frames;
+
+  for(var i = 0;i<naviosframes.length;i++){
+    var pos = naviosframes[i].position;
+    var img = naviospritesheet.get(pos.x,pos.y,pos.w,pos.h);
+    navioanimation.push(img);
+  }
+  var navioquebradoframes = navioquebradosprdata.frames;
+
+  for(var i = 0;i<navioquebradoframes.length;i++){
+    var pos = navioquebradoframes[i].position;
+    var img = navioquebradosprsheet.get(pos.x,pos.y,pos.w,pos.h);
+    navioquebradoanm.push(img);
+  }
+
+  var splashframes = splashdata.frames;
+
+  for(var i = 0;i<splashframes.length;i++){
+    var pos = splashframes[i].position;
+    var img = splashsheet.get(pos.x,pos.y,pos.w,pos.h);
+    splashanimation.push(img);
+  }
+
 
   
 }
@@ -74,6 +108,7 @@ function keyPressed() {
 function showBalls(ball,index) {
   if (ball){
     ball.display();
+    ball.animate();
    if (ball.body.position.x>=width||ball.body.position.y>=height-50){
      ball.remove(index);
    } 
@@ -91,7 +126,7 @@ function showNavios() {
     if (navios[navios.length-1] === undefined || navios[navios.length-1].body.position.x<width-300){
       var posicoes = [-40,-60,-70,-20];
       var pos = random(posicoes);
-      var navio = new Navio(width,height-100,170,170,pos);
+      var navio = new Navio(width,height-100,170,170,pos,navioanimation);
       navios.push(navio);
     }
     for(var i = 0;i<navios.length;i++){
@@ -101,11 +136,12 @@ function showNavios() {
         y: 0
       });
       navios[i].display();
+      navios[i].animate();
      }
     }
   }
   else{
-    var navio = new Navio(width,height-60,170,170,-60);
+    var navio = new Navio(width,height-60,170,170,-60,navioanimation);
     navios.push(navio);
 
   }
